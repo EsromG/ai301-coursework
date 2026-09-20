@@ -41,27 +41,37 @@ Quote source text directly in each field below. Paraphrase does not satisfy them
 
 **Run history**
 
-[The agreement score of each run you did, in order. A single run is a complete answer if
-only one run occurred. **The last score in your list must match the agreement line in the
-`eval-run.txt` you committed** — that file is the record of your final run.]
+- `agreement: 17/20 scored items  (bar: 18/20: below the bar)`
+- `agreement: 0/3 scored items`
+- `agreement: 3/3 scored items`
+- `agreement: 18/20 scored items  (bar: 18/20: PASS)`
+- `agreement: 19/20 scored items  (bar: 18/20: PASS)`
+
+The first full run scored 17/20. I then used `--only` on issue-01, issue-15, and issue-19 to test the disagreements. Before changing the rubric, that run scored 0/3. After updating the newcomer-scope check, the same three issues scored 3/3. The next full run scored 18/20, and my final saved run scored 19/20.
 
 **Issue analysis**
 
-[One scored issue, identified by id (`issue-01` through `issue-20`; the `calib-`
-issues are not scored). State your rubric's decision, the gold label, and the
-reasoning that produced your rubric's result.]
+I analyzed `issue-15`. My final rubric decision was `reject`, and the gold label was also `reject`, shown in the final run as:
+
+`issue-15  reject  reject   yes`
+
+The issue had been open for several years and had a history of people claiming it and then being unassigned. It also had two closed linked pull requests. My earlier version of the rubric did not treat repeated abandoned attempts as a strong enough scope signal, so it originally accepted this issue. I changed the scope check so that repeated claim-and-abandon cycles or multiple closed unmerged PRs count as evidence that the issue may be harder than it first appears.
 
 **Check rationale**
 
-[One check from the `rubric.md` uploaded to `tools/issue-select/`, quoted as it is
-currently written, with the reasoning behind its current form.]
+The check I revised is:
+
+`| newcomer-scope | Issue body, Comments section, and Repo facts linked PR history | Pass if the issue asks for one bounded piece of work. Fail if it is explicitly an umbrella or tracking issue, the comments show unresolved design debate with no maintainer decision, a maintainer explicitly says the work requires core-internal changes, it is only a usage/support question, or its history shows multiple abandoned implementation attempts such as two or more closed unmerged PRs or repeated claim-and-abandon cycles. Do not fail only because the issue touches several files, contains detailed requirements, or describes technically complex implementation ideas. | required |`
+
+I changed this check because my first version was too strict about issues that looked technically complex or touched several files, but it was not strict enough about issues with a long history of abandoned attempts. The revised wording focuses on evidence from the issue history instead of assuming that detailed or technical work is automatically too large for a newcomer.
 
 **Trade-offs**
 
-[What the quoted check gives up. Any one of these is a complete answer: an issue whose
-result it changes, a canary you re-ran with `--only`, a case you accept it will miss, or a
-stated reason nothing changed elsewhere. "Nothing changed, and here is how I know" earns
-the point in full when the reason follows.]
+The change helped with the three issues I re-ran using:
+
+`--only issue-01,issue-15,issue-19`
+
+Before the change, the result was `0/3 scored items`. After the change, it was `3/3 scored items`. The trade-off is that the check can still accept a difficult issue when there is no visible history showing that other contributors struggled with it. I chose not to reject issues only because they sound technical, because that caused acceptable issues like issue-01 and issue-19 to be rejected.
 
 ---
 
