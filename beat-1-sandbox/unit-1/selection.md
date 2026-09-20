@@ -15,23 +15,38 @@ wrong label is not graded.
 
 **Issue link**
 
-[The individual Path Review issue page. A link to the repository or the issue list
-does not satisfy this field.]
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/73
 
 **Verdict output**
 
-[Your skill's live-mode output for this issue, pasted verbatim and ending with the
-fenced JSON verdict block. A summary does not satisfy this field.]
+All five required checks gathered. Verified the issue's premise directly: README.md:24 says "add your OPENROUTER_API_KEY to .env", while .env.example lists only OPENAI_API_KEY and offers "mock" / "openai" for LLM_PROVIDER. The contradiction is real and sits in exactly the two files the issue names.
 
-**The verdict must record `accept` for this issue.** Choose an issue your own skill
-accepts. If your skill rejects every candidate you try, that is a signal about your
-rubric rather than about the issues: revise it and re-run — retries are unlimited and a
-partial re-run costs about $0.20 — or run the skill on different candidates. Output
-recording `reject` for the issue you chose earns no credit for this field.
+Grading summary (live mode, codepath/pathreview-ai301-fa26-s3 — inside scope):
 
-```
-paste the output here, including the closing JSON block
-```
+- maintainer-active — pass. Human default-branch commits by Aburke225 on 2026-09-16 (4 days ago), and that same COLLABORATOR posted triage comments closing issues on 2026-09-16. Not bot activity.
+- repo-active — pass. archived: false, last push 2026-09-16 — well inside 180 days.
+- newcomer-scope — pass. One bounded task ("Make the two files agree") across two named files, estimated 1–2 hours, labeled good first issue / tier-1 by a collaborator. No umbrella list, no design debate (zero comments), no abandoned attempts — the repo has no PRs at all.
+- issue-available — pass. No assignees; the full issue timeline is only four labeled events, so no linked PR or cross-reference; zero comments; a repo-wide PR search for 73 returns nothing. The one recent claim comment in the repo (acordero4852, 2026-09-19) is on a different issue — and under the Path Review house rule a classmate's claim wouldn't block it anyway.
+- contribution-policy — pass. docs/CONTRIBUTING.md exists with no AI clause; no AI_POLICY.md, and the PR template asks only for green CI and tests. Silence passes.
+
+Every required check passes, so the verdict is accept. On fit: this lands squarely in your "clearly explained and reasonably scoped" preference — the issue names the files, states the expected outcome, and needs no architecture decisions. The honest caveat is that it's a docs-consistency fix, so it will build your GitHub-workflow confidence (branch, PR, template, CI) more than your debugging skills; worth following with a bug-labeled tier-1 issue next.
+
+{
+  "item": "https://github.com/codepath/pathreview-ai301-fa26-s3/issues/73",
+  "checks": [
+    {"name": "maintainer-active", "grade": "pass",
+     "evidence": "Human commits by collaborator Aburke225 on main 2026-09-16 (4 days ago), plus his COLLABORATOR triage comments same day."},
+    {"name": "repo-active", "grade": "pass",
+     "evidence": "Repo archived=false and pushed_at=2026-09-16T21:50:20Z, within 180 days."},
+    {"name": "newcomer-scope", "grade": "pass",
+     "evidence": "Body asks one bounded change across README.md and .env.example, est. 1-2 hours; labeled 'good first issue'/'tier-1'; no comments, no prior PRs."},
+    {"name": "issue-available", "grade": "pass",
+     "evidence": "assignees: []; timeline contains only 4 'labeled' events (no linked PR); 0 comments; repo-wide PR search for 73 returns total_count: 0."},
+    {"name": "contribution-policy", "grade": "pass",
+     "evidence": "docs/CONTRIBUTING.md contains no AI-related clause and no AI_POLICY file exists; no stated AI policy passes."}
+  ],
+  "verdict": "accept"
+}
 
 ---
 
@@ -83,12 +98,12 @@ This is also the basis for the claim comment you write in Unit 2.
 
 **Selection rationale**
 
-[Answer all three:
 
-1. The issue's fit to your interests and to the time available.
-2. What the verdict identified correctly, and what you weighed that the rubric could
-   not.
-3. The anticipated difficulty in claiming it.]
+1. This issue fits me because it is clearly explained and small enough to finish in the time I have.
+
+2. The verdict correctly identified that it is well scoped, unclaimed, and in an active repo. I also noticed it is more of a documentation/configuration task than a debugging task.
+
+3. I do not expect claiming it to be difficult because it is unassigned and has no active pull request
 
 ---
 
