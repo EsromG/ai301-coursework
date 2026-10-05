@@ -15,17 +15,20 @@ label is not graded.
 
 **GitHub username**
 
-[Your GitHub username, exactly as it appears on your profile - no @, no
-profile URL. Your comment upstream is identified by this name, and it is
-the only thing that ties it to you. Several students may plan the same
-house issue, so this is what keeps their comments off your score and
-yours off theirs.]
+EsromG
 
 **Plan comment**
 
-[Link to the comment where you posted your plan on the issue. Use the comment's own
-permalink. **Then paste the text of that comment underneath the link** — the pasted text is
-what this field is graded on, so copy across what you actually posted.]
+
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/73#issuecomment-5987254292
+
+I reproduced the setup inconsistency described in #73.
+
+The current `.env.example` includes `LLM_PROVIDER=mock` and `OPENAI_API_KEY`, but does not include `OPENROUTER_API_KEY`, while `README.md` and `docs/SETUP.md` direct users to configure OpenRouter. `core/config.py` already defines the corresponding OpenRouter settings, and `OPENAI_API_KEY` is still used separately by the OpenAI embedding provider.
+
+My plan is to keep the change limited to `README.md` and `.env.example`: add the missing `OPENROUTER_API_KEY` example, make the `LLM_PROVIDER` guidance consistent with the documented OpenRouter setup, and keep `OPENAI_API_KEY` for the existing embedding configuration. I won’t change runtime behavior.
+
+I’ll verify the change by copying `.env.example` to `.env` again and grepping for `LLM_PROVIDER`, `OPENAI_API_KEY`, and `OPENROUTER_API_KEY`, then checking that the README and example environment file use consistent configuration names.
 
 ---
 
@@ -33,15 +36,72 @@ what this field is graded on, so copy across what you actually posted.]
 
 **Branch**
 
-[The name of the branch you built the change on, exactly as it appears in your fork. The
-naming shape is a type prefix, then the issue number, then a short description. **The issue
-number in the branch name must be the number of the issue you claimed** — a name carrying
-any other number does not satisfy this field.]
+fix/73-openrouter-env-config
 
 **Evidence**
 
-[Your Unit 2 reproduction steps re-run against the built change: the before, then the
-after. Paste both, including the commands you ran and their output.]
+Before the fix:
+
+```bash
+cp .env.example .env
+grep -E 'LLM_PROVIDER|OPENAI_API_KEY|OPENROUTER_API_KEY' .env
+```
+
+Output:
+
+```text
+LLM_PROVIDER=mock
+OPENAI_API_KEY=sk-your-key-here
+```
+
+`OPENROUTER_API_KEY` was missing even though the README instructed users to configure it.
+
+After the fix:
+
+```bash
+rm -f .env
+cp .env.example .env
+grep -E 'LLM_PROVIDER|OPENAI_API_KEY|OPENROUTER_API_KEY' .env
+```
+
+Output:
+
+```text
+LLM_PROVIDER=mock
+OPENROUTER_API_KEY=sk-or-your-key-here
+OPENAI_API_KEY=sk-your-key-here
+```
+
+I also checked the relevant configuration references:
+
+```bash
+grep -nE 'LLM_PROVIDER|OPENAI_API_KEY|OPENROUTER_API_KEY' README.md .env.example
+```
+
+Output:
+
+```text
+README.md:24:# Configure environment, then add your OPENROUTER_API_KEY to .env
+.env.example:18:LLM_PROVIDER=mock
+.env.example:19:OPENROUTER_API_KEY=sk-or-your-key-here
+.env.example:20:OPENAI_API_KEY=sk-your-key-here
+```
+
+The final implementation commit changed only the intended files:
+
+```bash
+git show --stat --oneline HEAD
+```
+
+Output:
+
+```text
+33212cc fix: align OpenRouter environment setup
+ .env.example | 3 ++-
+ README.md    | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+```
+
 
 ## Eval iterations
 
@@ -50,28 +110,30 @@ fields.
 
 **Run history**
 
-[The agreement score of each run you did, in order. A single run is a complete answer if
-only one run occurred. **The last score in your list must match the agreement line in the
-`eval-run.txt` you committed** — that file is the record of your final run.]
+Run 1: 19/20
 
 **Package analysis**
 
-[Pick one scored package (`pkg-01` through `pkg-20` — the four `calib-` packages are never
-scored). Name it by id, say what your rubric decided and what the gold label said, and
-explain why your rubric read it that way.]
+Package: pkg-20
+
+Rubric verdict: accept
+
+Gold label: reject 
+
+My rubric accepted this package because the diagnosis was directly grounded in the reproduced crash, the proposed scope was bounded to the stale prev pointer and capacity-change handling, and the plan gave concrete implementation and regression-test steps. It also acknowledged the performance risk and explicitly kept broader cached-pointer investigation out of scope. 
+
+The gold label was reject, which shows that my rubric was too permissive for this case. The package proposed a specific generation-counter design even though the issue thread said there were multiple detection approaches worth comparing for cost. My rubric treated that implementation detail as sufficiently executable instead of requiring stronger evidence that the chosen mechanism respected the maintainer's performance constraint.
 
 **Check rationale**
 
-[Quote one check from the `rubric.md` you uploaded to `tools/plan-check/`, exactly as it reads now.
-Then say why it reads that way — what you revised to get there, or what you rejected in
-favour of it.]
+> `honesty` — Passes if unresolved questions are identified as uncertainties rather than stated as facts, and any implementation deviation is recorded honestly when applicable.
+
+I kept this check because a plan can look technically complete while still overstating what has been verified. During my own plan review, this check caught that I had treated OpenRouter runtime behavior as more certain than the code evidence supported. I revised the plan to explicitly state that I had not found runtime code outside `core/config.py` consuming `llm_provider` or `openrouter_api_key`, and I recorded that finding under `## Deviations` instead of claiming there were no deviations. This made the rubric require plans to distinguish verified facts from assumptions and to document what actually happened during implementation.
 
 **Trade-offs**
 
-[Every check gives something up. Any one of these is a complete answer: a package whose
-result it changes, a canary you re-ran with `--only`, a case you accept it will miss, or a
-stated reason nothing changed elsewhere. "Nothing changed, and here is how I know" earns
-the point in full when the reason follows.]
+The clearest trade-off in my final rubric is `pkg-20`. My rubric accepted it, while the gold label rejected it. I accepted that result because the plan was strongly grounded in the reproduction, had a bounded scope, concrete implementation steps, regression tests, and an explicit performance risk. The trade-off is that my rubric gives some credit to a plan that chooses a specific implementation approach before fully benchmarking alternative approaches mentioned by the maintainer. Tightening the rubric enough to reject `pkg-20` could also make it too strict on otherwise executable plans that responsibly identify an open implementation trade-off.
+
 
 ---
 
