@@ -38,6 +38,8 @@ A Toolkit block looks like this (copy it into each story section and
 fill it there):
 
 ```text
+
+I upgraded the issue-select skill into issue-scout, adding Python-focused GitHub search queries, ranking filters, and automated issue evaluation. During the first scan, I found that three issues passed the rubric despite depending on unfinished work. I updated the newcomer-scope check to reject blocked issues and documented the results in scan-notes.md. I then used the improved scout to evaluate two Python issues from the CodePath Issue Selection site and selected geekatron/jerry#378 as my preferred contribution.
 **Toolkit**
 
 - Tool: [which tool did this phase's work, and how you used it]
@@ -55,10 +57,9 @@ happened; these entries are the toolkit's own timeline.
 All four entries are graded. Keep every heading below, and fill each
 one in the week it belongs to.
 
-**Unit 5: [one line on the tool work]**
+**Unit 5: Built and improved issue-scout for finding and evaluating Python open-source issues.**
 
-[2-4 sentences: what you built (the scout, your strategy), what broke
-or fell short, what changed because of it.]
+I customized the issue-scout skill with Python-focused GitHub search queries, ranking filters, and a rubric for evaluating beginner-friendly issues. My initial scan found 297 unique issues and graded five, but three were incorrectly accepted despite depending on unfinished work. I updated the newcomer-scope check to reject blocked issues and documented the findings. I then used the improved skill to evaluate two issues from the CodePath tracker and selected geekatron/jerry#378 as my contribution.
 
 **Unit 6: [one line on the tool work]**
 
