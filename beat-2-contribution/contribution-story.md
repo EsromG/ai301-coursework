@@ -102,26 +102,29 @@ https://github.com/geekatron/jerry/issues/378#issuecomment-6549787788
 
 **Problem Description**
 
-[In your own words, what is broken or missing?]
+The ast_parse and ast_query functions in Jerry's Python CLI accept a json_output parameter that is never used. Although the CLI passes the global --json flag through its routing logic, both functions produce JSON output regardless of the flag's value. This creates unnecessary parameters and misleading CLI wiring.
 
 **Expected Behavior**
 
-[What should happen?]
+Following the issue's recommended Option 1, the AST parse and query commands should continue producing JSON output, but the unused json_output parameter and its forwarding should be removed.
 
 **Current Behavior**
 
-[What actually happens?]
+Both commands produce identical output whether or not the global --json flag is provided. The functions accept json_output but never read its value.
 
 **Affected Components**
 
-[Which parts of the codebase are involved?]
+- src/interface/cli/ast_commands.py: Defines ast_parse and ast_query, which accept the unused parameter.
+- src/interface/cli/main.py: Passes json_output through _handle_ast to both functions.
+- src/interface/cli/parser.py: Defines the global --json option.
+- tests/unit/interface/cli/test_ast_commands.py: Contains relevant unit tests.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code, used to investigate the relevant CLI subsystem and trace parameter usage.
+- What it produced: A focused map of the affected functions, their callers, and existing tests.
+- Difficulties: The CLI flag's behavior required distinguishing an unused parameter from a functional output defect.
+- What changed: I narrowed the investigation to the CLI subsystem and selected the maintainer's recommended Option 1 rather than introducing a new output format.
 
 ---
 
@@ -129,31 +132,56 @@ https://github.com/geekatron/jerry/issues/378#issuecomment-6549787788
 
 **Environment Setup**
 
-[What a stranger would need to stand this up: your operating system,
-the relevant versions (language, runtime, package manager, the project
-itself), and how you set the project up. Then the challenges you faced
-and how you solved them, or that none came up.]
+I reproduced the issue on macOS using the VS Code integrated terminal.
 
+- Jerry version: 0.31.9
+- Repository commit: 24518e5d
+- Python: 3.12.7
+- uv: 0.13.7
+- Setup command: make setup
+  
 **Steps to Reproduce**
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+I initially encountered difficulty installing uv through Homebrew because it required building several dependencies. I stopped that installation and successfully used Astral's standalone installer instead. I then ran make setup, which installed the dependencies and Git hooks.
+
+From the Jerry repository root:
+
+1. Create a Markdown test file:
+ ```bash  
+  printf '# Test Heading\n\nHello Jerry.\n' > /tmp/jerry-378-test.md
+```
+2. Run ast parse with and without the global --json flag:
+
+```bash
+  uv run jerry ast parse --root /tmp /tmp/jerry-378-test.md > /tmp/jerry-378-default.json
+  uv run jerry --json ast parse --root /tmp /tmp/jerry-378-test.md > /tmp/jerry-378-flag.json
+  diff -q /tmp/jerry-378-default.json /tmp/jerry-378-flag.json
+  echo "Diff exit status: $?"
+```
+3. Repeat the comparison with ast query:
+
+```bash
+  uv run jerry ast query --root /tmp /tmp/jerry-378-test.md heading > /tmp/jerry-378-query-default.json
+  uv run jerry --json ast query --root /tmp /tmp/jerry-378-test.md heading > /tmp/jerry-378-query-flag.json
+  diff -q /tmp/jerry-378-query-default.json /tmp/jerry-378-query-flag.json
+  echo "Diff exit status: $?"
+```
+
 
 **Reproduction Evidence**
 
-- **Commit showing reproduction:** [link to commit in your fork]
-- **Screenshots/logs:** [if applicable]
-- **My findings:** [what you discovered during reproduction; an
-  honest, evidenced cannot-reproduce that led you to re-pick or ask
-  the maintainer belongs here and costs you nothing]
+- **Commit showing reproduction:** None. No reproduction commit was created.
+- **Screenshots/logs:** Terminal output confirmed that all four commands completed with exit status 0. Both diff comparisons also returned 0.
+- **Output sizes:** ast parse produced 2,197 bytes with and without --json. ast query produced 193 bytes in both cases.
+- **My findings:** Both AST commands produce byte-identical stdout regardless of the global --json flag. Inspection of ast_commands.py showed that the functions accept json_output but never use it. Only stdout was compared; stderr was not captured, and the output was not independently validated with a JSON parser.
+
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code and the repro-check skill, together with terminal-based CLI tests.
+- What it produced: Reproducible commands, successful execution evidence, a code-path analysis, and a reproduction report.
+- Difficulties: My initial evidence showed identical output but did not record individual command exit codes or output contents. The grader also identified communication issues with my earlier claim.
+- What changed:  I reran the commands, recorded successful exit codes and nonempty output sizes, corrected unsupported statements, and documented the existing claim accurately. The reproduction checks passed, but the overall repro-check verdict remained rejected because of the original claim's communication requirements.
 
 ---
 
