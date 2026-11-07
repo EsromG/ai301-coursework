@@ -65,7 +65,7 @@ I customized the issue-scout skill with Python-focused GitHub search queries, ra
 
 **Unit 6:  Installed and tested voice-guard and updated issue-scout for real-world contributions.**
 
-I consolidated my existing voice guides into one shared file and installed the voice-guard hook to check outgoing GitHub comments. I verified that the hook works when it blocked a gh issue comment --help command. I also replaced the newcomer-scope rubric check with scope-feasible, added difficulty notes, and successfully regraded my two selected issues. I have not yet created the repository-specific CLAUDE.local.md memory file; I will update this entry after completing that step.
+I consolidated my existing voice guides into one shared file and installed the voice-guard hook to check outgoing GitHub comments. I verified the hook by attempting `gh issue comment --help`, which was correctly blocked before execution. I also updated issue-scout with the `scope-feasible` rubric and regraded my selected issues. For Jerry #378, I created a 40-line `CLAUDE.local.md` containing the repository conventions, relevant CLI files, and development commands. I used a focused Claude Code investigation instead of mapping the entire repository, and configured `.git/info/exclude` to keep the memory file out of my pull request.
 
 **Unit 7: [one line on the tool work]**
 
