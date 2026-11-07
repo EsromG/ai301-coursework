@@ -1,4 +1,4 @@
-# Contribution: [Issue Title]
+# Contribution: jerry ast parse/query: json_output param is dead code
 
 Path: `beat-2-contribution/contribution-story.md`
 
@@ -7,12 +7,16 @@ the repository is not read. **Keep every section header below under its exact na
 format criteria grade exactly that. Your course repo link is the whole submission: no tool
 files and no evidence uploads are part of Assignment 5.
 
-**Contribution Number:** [1]
-**Student:** [Student name]
-**GitHub Username:** [your GitHub username, exactly as it appears on your profile - no @, no
-profile URL. Your comments upstream are identified by this name.]
-**Issue:** [GitHub issue link]
-**Pull Request:** [GitHub PR link, once opened]
+**Contribution Number:** 1 
+
+**Student:** Esrom Ghebreweldi 
+
+**GitHub Username:** EsromG
+
+**Issue:** https://github.com/geekatron/jerry/issues/378
+
+**Pull Request:** Pending
+
 
 One repository, built across units 5 to 8, telling the whole story of your real
 contribution. Fill it as you work, not at the end — the sections below ask for evidence that
@@ -38,8 +42,6 @@ A Toolkit block looks like this (copy it into each story section and
 fill it there):
 
 ```text
-
-I upgraded the issue-select skill into issue-scout, adding Python-focused GitHub search queries, ranking filters, and automated issue evaluation. During the first scan, I found that three issues passed the rubric despite depending on unfinished work. I updated the newcomer-scope check to reject blocked issues and documented the results in scan-notes.md. I then used the improved scout to evaluate two Python issues from the CodePath Issue Selection site and selected geekatron/jerry#378 as my preferred contribution.
 **Toolkit**
 
 - Tool: [which tool did this phase's work, and how you used it]
@@ -61,11 +63,9 @@ one in the week it belongs to.
 
 I customized the issue-scout skill with Python-focused GitHub search queries, ranking filters, and a rubric for evaluating beginner-friendly issues. My initial scan found 297 unique issues and graded five, but three were incorrectly accepted despite depending on unfinished work. I updated the newcomer-scope check to reject blocked issues and documented the findings. I then used the improved skill to evaluate two issues from the CodePath tracker and selected geekatron/jerry#378 as my contribution.
 
-**Unit 6: [one line on the tool work]**
+**Unit 6:  Installed and tested voice-guard and updated issue-scout for real-world contributions.**
 
-[2-4 sentences: the voice-guard, the repo-memory file. What broke or
-fell short, and what changed because of it. "Nothing broke" counts when
-it is true - say how you know.]
+I consolidated my existing voice guides into one shared file and installed the voice-guard hook to check outgoing GitHub comments. I verified that the hook works when it blocked a gh issue comment --help command. I also replaced the newcomer-scope rubric check with scope-feasible, added difficulty notes, and successfully regraded my two selected issues. I have not yet created the repository-specific CLAUDE.local.md memory file; I will update this entry after completing that step.
 
 **Unit 7: [one line on the tool work]**
 
@@ -81,24 +81,20 @@ drafted, what you did with the draft.]
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs in your own words: how you searched, what your scan
-surfaced, what your scout's verdict said, why this issue fits your
-profile, and what you hope to learn. If your scout's verdict on it
-was reject and you chose it anyway, say so here and say why; choosing
-against your own tool silently is what loses points. Close with an
-honest read of the tool itself: where the scout fell short on a real
-wild search and what you changed or would change, or what convinced
-you it held up. **Record the link to your claim comment in this section too.**
-Not claimed yet? Write `claim pending` and today's date where the link goes,
-and add the link the moment your claim lands.]
+I used my customized issue-scout skill to search for Python open-source issues that matched my experience and were suitable for a focused contribution. My initial scan found 297 unique issues, which were reduced to 248 after filtering. During evaluation, I discovered that some issues passed the rubric despite depending on unfinished work, so I improved the scope check and documented the results. I then directly evaluated two candidates from CodePath's Issue Selection site: geekatron/jerry#378 and emfcamp/Website#1075. Both were accepted by the scout, but I selected Jerry #378 because it had a clearer problem description, identified the affected functions, and recommended a specific fix.
+
+Jerry #378 involves removing an unused json_output parameter from two Python CLI functions. The issue fits my Python experience and gives me an opportunity to work with an unfamiliar open-source codebase, follow its contribution standards, and practice test-driven development. My updated scout rated the issue accepted with straightforward difficulty. The scout was helpful for narrowing down candidates, but its original scope check was too restrictive for real-world issues. In Unit 6, I replaced newcomer-scope with scope-feasible so that open design questions inform difficulty rather than automatically rejecting an issue. I also learned that claiming an issue does not necessarily require waiting for the maintainer's reply before beginning the investigation.
+
+Claim comment: 
+
+https://github.com/geekatron/jerry/issues/378#issuecomment-6549787788 
 
 **Toolkit**
 
-- Tool: issue-scout (your scout: your search strategy, your rubric),
-  and how you used it
-- What it produced: [the scan and its verdict on this issue, described]
-- Difficulties: [where it fell short, or "none met" if none did]
-- What changed: [what you patched or would update, or "nothing"]
+- Tool: issue-scout, customized with Python-focused search queries, ranking filters, and a five-check evaluation rubric.
+- What it produced: An initial scan of 297 unique issues, 248 filtered candidates, and two directly graded Python issues. Jerry #378 received an accepted verdict with straightforward difficulty.
+- Difficulties: The initial rubric accepted issues blocked by unfinished work. My later newcomer-scope check also risked rejecting otherwise feasible real-world issues with open design questions.
+- What changed: I first improved the scope check to identify blocked work. In Unit 6, I applied the official patch, replacing newcomer-scope with scope-feasible and adding straightforward, moderate, and ambitious difficulty notes. I documented the changes in scan-notes.md and regraded both candidates.
 
 ---
 
