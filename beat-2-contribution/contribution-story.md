@@ -206,11 +206,24 @@ I will not remove the global --json option from the CLI, change the output forma
 **Implementation Plan**
 
 1. Inspect src/interface/cli/ast_commands.py and src/interface/cli/main.py to confirm the affected function signatures and call sites.
-2. Add or update relevant tests in tests/unit/interface/cli/test_ast_commands.py and, where appropriate, tests/integration/cli/test_ast_subprocess.py to protect the existing AST JSON output behavior.
-3. Remove the unused json_output parameter from the ast_parse and ast_query signatures.
-4. Update _handle_ast and its call sites in src/interface/cli/main.py so the unused value is no longer forwarded to AST commands.
-5. Run the relevant AST unit and integration tests, followed by the repository's lint and type checks.
-6. Repeat the original reproduction commands to confirm that AST parse and query output remains unchanged with and without --json.
+2. Add regression tests using inspect.signature to assert that ast_parse, ast_query, and _handle_ast do not accept a json_output parameter. Run these tests before implementing the fix to confirm they fail.
+3. Remove json_output from the ast_parse and ast_query signatures in src/interface/cli/ast_commands.py.
+4. Remove the now-unused json_output parameter from _handle_ast and update its caller in src/interface/cli/main.py.
+5. Update the two existing tests in tests/unit/interface/cli/test_ast_commands.py that call _handle_ast with json_output=False, around lines 1178 and 1194.
+6. Run the relevant tests using uv run pytest tests/unit/interface/cli/test_ast_commands.py tests/integration/cli/test_ast_subprocess.py, followed by make lint.
+7. Repeat the original CLI reproduction commands with and without --json and compare their stdout to verify that the existing output behavior remains unchanged.
+
+## Risks and Unknowns
+
+- Removing json_output from _handle_ast will require updating its existing callers and tests. The two known tests around lines 1178 and 1194 must be updated.
+
+- The initial code inspection found no additional callers of ast_parse or ast_query outside the CLI handler and tests, but I will search again before modifying the signatures.
+
+- The global --json flag must remain available to other CLI commands.
+
+- Byte-identical output alone cannot distinguish the original implementation from the fixed implementation. The new signature tests will provide a decisive regression check.
+
+- The full repository test suite currently has three baseline failures unrelated to this issue. These are documented in ship-manifest.md.
 
 **Deviations**
 
@@ -218,10 +231,10 @@ None yet. Any changes to this plan during implementation will be documented here
 
 **Toolkit**
 
-- Tool: Claude Code for code-path investigation and implementation planning; plan-check for evaluating the plan before implementation.
-- What it produced: A bounded implementation plan identifying the affected functions, forwarding logic, and relevant tests.
-- Difficulties: Ensuring the fix removes unused wiring without accidentally changing existing CLI behavior.
-- What changed: I selected the issue's recommended Option 1 and limited the intended changes to AST command handling and regression tests. The plan has not yet been graded or implemented.
+- Tool: Claude Code plan-check skill.
+- What it produced: An accepted, bounded implementation plan for Jerry #378. All six rubric checks passed.
+- Difficulties: The initial plan did not include a test that could distinguish the unfixed code from the fixed code. It also overlooked existing _handle_ast test calls.
+- What changed: I added signature-based regression tests, explicit test commands, the affected call sites, and a Risks and Unknowns section. The revised plan passed all six checks.
 
 ---
 
