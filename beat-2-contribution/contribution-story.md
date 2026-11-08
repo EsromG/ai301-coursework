@@ -240,39 +240,72 @@ None yet. Any changes to this plan during implementation will be documented here
 
 ## Testing Strategy
 
-[What observable checks prove the fix: your reproduction steps re-run
-against the built change (before and after), and the repo's own test
-suite or checks with the outcome shown. "Tests pass" with nothing
-observable named is not a strategy.]
+I used test-driven development to verify the fix for Jerry #378. Before changing the implementation, I added three regression tests using inspect.signature to check that ast_parse, ast_query, and _handle_ast do not accept the unused json_output parameter. All three tests initially failed as expected.
+
+After implementing the fix, I ran:
+
+- uv run pytest tests/unit/interface/cli/test_ast_commands.py::TestJsonOutputParameterRemoved — 3 passed.
+
+- uv run pytest tests/unit/interface/cli/test_ast_commands.py tests/integration/cli/test_ast_subprocess.py — 171 passed.
+
+- make lint — Ruff passed; Pyright reported 0 errors and 0 warnings.
+
+- uv run ruff format --check on the three modified files — passed.
+
+I also repeated the CLI reproduction commands for ast parse and ast query with and without --json. All four commands exited with status 0. Both command pairs produced identical stdout, and the output before and after the fix was byte-identical.
+
+The full test suite was attempted before implementation and reported 16,776 passed, 160 skipped, and 3 failed. Two failures involved local-only Markdown files, and one was a filesystem timeout involving a MacDroid-connected directory. These baseline failures are recorded in ship-manifest.md and are unrelated to the AST change. I have not rerun the full test suite after the fix at this stage.
+
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code, pytest, Ruff, Pyright, and terminal-based CLI comparisons.
+- What it produced: Three regression tests showing red-to-green behavior, 171 passing AST tests, passing lint and formatting checks, and identical CLI output before and after the fix.
+- Difficulties: The full test suite had three pre-existing environment-related failures. I also discovered that make lint does not check formatting.
+- What changed: I recorded the baseline failures separately, ran targeted AST tests, and checked formatting explicitly with Ruff.
 
 ---
 
 ## Implementation Notes
 
-[A running log, added to as you work. Date each entry. What you
-built, decisions you made when you made them, wrong turns included.]
+**November 7, 2026 — Regression tests (Red phase)**
 
-**[Date]**
+Created the branch fix/378-remove-unused-json-output to address geekatron/jerry#378.
 
-[Entry]
+Using Claude Code, I added three regression tests to tests/unit/interface/cli/test_ast_commands.py. The tests use inspect.signature to verify that ast_parse, ast_query, and _handle_ast do not expose a json_output parameter.
 
-**[Date]**
+All three tests initially failed because the existing function signatures still contained the unused parameter. This confirmed that the tests could detect the issue before the fix.
 
-[Entry]
+**November 7, 2026 — Implementation (Green phase)**
+
+Implemented the issue's recommended Option 1.
+
+In src/interface/cli/ast_commands.py, removed json_output from the ast_parse and ast_query signatures and removed the obsolete parameter documentation.
+
+In src/interface/cli/main.py, removed the parameter from _handle_ast, its forwarding to the two AST commands, and the corresponding argument at the caller.
+
+In tests/unit/interface/cli/test_ast_commands.py, updated two existing routing tests to call _handle_ast without json_output.
+
+The three regression tests passed after implementation. The relevant AST test suite passed all 171 tests, and make lint reported no errors.
+
+**November 7, 2026 — Verification and formatting**
+
+During validation, I discovered that make lint does not run Ruff's formatting check. The shortened ast_parse signature needed formatting, so I ran ruff format on the affected file and verified that all three changed files passed the formatter check.
+
+I repeated the original CLI commands with and without --json. Every command exited successfully, and both AST commands produced byte-identical stdout before and after the fix.
+
+The full test suite had three pre-existing failures before implementation, documented in ship-manifest.md. I used focused regression and AST tests to verify this change.
+
+**Deviations from the accepted plan**
+
+No functional deviations. The only additional action was running Ruff's formatter to satisfy the repository's formatting conventions.
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code for scoped code changes; pytest for regression and integration tests; Ruff and Pyright for code-quality checks.
+- What it produced: A focused change across three files, three new regression tests, two updated routing tests, and verified preservation of CLI behavior.
+- Difficulties: The initial regression tests intentionally failed. A shell command encountered a zsh =cmd expansion issue, and Ruff formatting required an additional correction.
+- What changed: I corrected the shell command, formatted the shortened function signature, and reran the tests and checks. No changes were made outside the accepted issue scope.
 
 ---
 
