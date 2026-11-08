@@ -72,9 +72,6 @@ I consolidated my existing voice guides into one shared file and installed the v
 
 I installed ship-gate and configured ship-manifest.md with Jerry's lint and type checks, documenting unrelated full-suite test failures separately. I used Claude Code to add three regression tests that failed before the fix and passed afterward, then verified 171 AST tests and unchanged CLI output. The initial ship-gate rejected my PR title because it lacked the repository's required changelog exemption, so I added [skip-changelog] and passed all seven precheck criteria. I also documented the skipped pytest and pip-audit hooks before opening [PR #440](https://github.com/geekatron/jerry/pull/440)
 
-[2-4 sentences: the ship-gate and your gate manifest. What it produced
-on your real branch, what fought you, what changed because of it.]
-
 **Unit 8: [one line on the tool work]**
 
 [2-4 sentences: the PR-monitor and your playbook. What it read, what it
@@ -257,7 +254,7 @@ After implementing the fix, I ran:
 
 I also repeated the CLI reproduction commands for ast parse and ast query with and without --json. All four commands exited with status 0. Both command pairs produced identical stdout, and the output before and after the fix was byte-identical.
 
-The full test suite was attempted before implementation and reported 16,776 passed, 160 skipped, and 3 failed. Two failures involved local-only Markdown files, and one was a filesystem timeout involving a MacDroid-connected directory. These baseline failures are recorded in ship-manifest.md and are unrelated to the AST change. I have not rerun the full test suite after the fix at this stage.
+The full test suite was run before implementation and reported 16,776 passed, 160 skipped, and three failures. During the pre-commit attempt after implementation, the full suite reported 16,825 passed, 186 skipped, and six failures. Five involved local-only Markdown files, while the remaining failure was a MacDroid filesystem timeout. I used the repository's documented SKIP=pytest exception to commit the change. The targeted AST tests and other applicable code-quality checks passed.
 
 
 **Toolkit**
@@ -346,10 +343,6 @@ The description also discloses the unrelated full-suite test failures, the skipp
 **Maintainer Feedback:**
 
 - November 7, 2026: None yet. PR opened and awaiting review.
-
-- [Date]: [feedback received, or "none yet"; silence is a normal
-  state and costs you nothing]
-- [Date]: [how you addressed it]
 
 **Status:** Awaiting review
 
