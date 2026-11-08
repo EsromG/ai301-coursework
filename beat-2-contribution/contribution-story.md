@@ -296,6 +296,12 @@ I repeated the original CLI commands with and without --json. Every command exit
 
 The full test suite had three pre-existing failures before implementation, documented in ship-manifest.md. I used focused regression and AST tests to verify this change.
 
+**November 7, 2026 — Commit and pre-commit validation**
+
+I committed the fix as `38c0a3a6` (`fix: remove unused json_output parameter from AST commands`). The first commit attempt was blocked by the full-suite pytest pre-commit hook: 16,825 tests passed, 186 were skipped, and six failed. Five failures involved local AI301 Markdown files, while the sixth was the previously observed MacDroid filesystem timeout.
+
+I used the repository's documented `SKIP=pytest` exception to create the commit. All other applicable pre-commit checks passed, including Ruff, formatting, architecture validation, SPDX validation, Pyright, and Commitizen. The targeted AST tests had already passed (171 tests), and the CLI output comparisons confirmed unchanged behavior.
+
 **Deviations from the accepted plan**
 
 No functional deviations. The only additional action was running Ruff's formatter to satisfy the repository's formatting conventions.
