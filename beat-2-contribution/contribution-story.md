@@ -67,7 +67,10 @@ I customized the issue-scout skill with Python-focused GitHub search queries, ra
 
 I consolidated my existing voice guides into one shared file and installed the voice-guard hook to check outgoing GitHub comments. I verified the hook by attempting `gh issue comment --help`, which was correctly blocked before execution. I also updated issue-scout with the `scope-feasible` rubric and regraded my selected issues. For Jerry #378, I created a 40-line `CLAUDE.local.md` containing the repository conventions, relevant CLI files, and development commands. I used a focused Claude Code investigation instead of mapping the entire repository, and configured `.git/info/exclude` to keep the memory file out of my pull request.
 
-**Unit 7: [one line on the tool work]**
+
+**Unit 7: Implemented Jerry #378 using test-driven development and validated the PR with ship-gate.**
+
+I installed ship-gate and configured ship-manifest.md with Jerry's lint and type checks, documenting unrelated full-suite test failures separately. I used Claude Code to add three regression tests that failed before the fix and passed afterward, then verified 171 AST tests and unchanged CLI output. The initial ship-gate rejected my PR title because it lacked the repository's required changelog exemption, so I added [skip-changelog] and passed all seven precheck criteria. I also documented the skipped pytest and pip-audit hooks before opening [PR #440](https://github.com/geekatron/jerry/pull/440)
 
 [2-4 sentences: the ship-gate and your gate manifest. What it produced
 on your real branch, what fought you, what changed because of it.]
@@ -321,7 +324,7 @@ No functional deviations. The only additional action was running Ruff's formatte
 
 **PR Description:** 
 
-Opened PR #440 against geekatron/jerry:main from my fork's fix/378-remove-unused-json-output branch.
+Opened [PR #440](https://github.com/geekatron/jerry/pull/440) against geekatron/jerry:main from my fork's fix/378-remove-unused-json-output branch.
 
 The PR removes the unused json_output parameter from ast_parse, ast_query, and _handle_ast, updates two existing routing tests, and adds three regression tests.
 
