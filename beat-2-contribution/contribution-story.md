@@ -15,7 +15,7 @@ files and no evidence uploads are part of Assignment 5.
 
 **Issue:** https://github.com/geekatron/jerry/issues/378
 
-**Pull Request:** Pending
+**Pull Request:** https://github.com/geekatron/jerry/pull/440
 
 
 One repository, built across units 5 to 8, telling the whole story of your real
@@ -317,27 +317,45 @@ No functional deviations. The only additional action was running Ruff's formatte
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when opened]
+**PR Link:** https://github.com/geekatron/jerry/pull/440 
 
-**PR Description:** [what the PR says; much of the content above
-adapts into it]
+**PR Description:** 
+
+Opened PR #440 against geekatron/jerry:main from my fork's fix/378-remove-unused-json-output branch.
+
+The PR removes the unused json_output parameter from ast_parse, ast_query, and _handle_ast, updates two existing routing tests, and adds three regression tests.
+
+It references Fixes #378 and uses [skip-changelog] as permitted by the repository's contributing guidelines.
+
+**Verification included in the PR:**
+
+Three regression tests passed after initially failing before the implementation.
+
+All 171 targeted AST tests passed.
+
+Ruff, formatting, and Pyright checks passed.
+
+CLI outputs remained identical before and after the fix.
+
+The description also discloses the unrelated full-suite test failures, the skipped pytest and pip-audit hooks, and my use of Claude Code during implementation.
+
 
 **Maintainer Feedback:**
+
+- November 7, 2026: None yet. PR opened and awaiting review.
 
 - [Date]: [feedback received, or "none yet"; silence is a normal
   state and costs you nothing]
 - [Date]: [how you addressed it]
 
-**Status:** [Awaiting review / Iterating / Merged / Closed. The
-status is a fact you record, never a grade: the PR is graded as
-opened.]
+**Status:** Awaiting review
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: Claude Code, voice-guard, ship-gate, and pr-precheck.
+- What it produced: PR #440 with an accepted ship-gate evaluation. All seven precheck criteria passed before submission.
+- Difficulties: The initial ship-gate rejected the PR title because the repository required a changelog entry or [skip-changelog]. A pre-push security scan also detected a vulnerability in a locked development dependency.
+- What changed: I updated the PR title, disclosed the test and security-check limitations, reran the ship-gate until it passed, and opened the PR against the original repository.
 
 ---
 
